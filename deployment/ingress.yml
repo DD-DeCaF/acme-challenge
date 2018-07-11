@@ -1,0 +1,20 @@
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: acme-challenge
+spec:
+  rules:
+  - host: dd-decaf.eu
+    http:
+      paths:
+      - path: /
+        backend:
+          serviceName: acme-challenge
+          servicePort: 80
+  - host: memote.io
+    http:
+      paths:
+      - path: /
+        backend:
+          serviceName: acme-challenge
+          servicePort: 80

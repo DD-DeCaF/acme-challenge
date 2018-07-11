@@ -1,0 +1,34 @@
+sudo: required
+
+git:
+  depth: 2
+
+services:
+  - docker
+
+env:
+  global:
+    - IMAGE_REPO=gcr.io/dd-decaf-cfbf6/acme-challenge
+
+script:
+  - docker build -t ${IMAGE_REPO}:${TRAVIS_COMMIT::12} -t ${IMAGE_REPO}:${TRAVIS_BRANCH} .
+
+before_deploy:
+  - ./scripts/install_gcloud.sh
+  - ./scripts/install_kubectl.sh
+  - docker push ${IMAGE_REPO}:${TRAVIS_COMMIT::12}
+  - docker push ${IMAGE_REPO}:${TRAVIS_BRANCH}
+
+deploy:
+  provider: script
+  script: ./scripts/deploy.sh
+  on:
+    branch: master
+
+notifications:
+  email: false
+  slack:
+    rooms:
+    on_success: change
+    on_failure: change
+    on_pull_requests: false
