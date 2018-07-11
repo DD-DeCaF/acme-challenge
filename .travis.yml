@@ -1,34 +1,29 @@
 sudo: required
-
 git:
   depth: 2
-
 services:
-  - docker
-
+- docker
 env:
   global:
-    - IMAGE_REPO=gcr.io/dd-decaf-cfbf6/acme-challenge
-
+  - IMAGE_REPO=gcr.io/dd-decaf-cfbf6/acme-challenge
 script:
-  - docker build -t ${IMAGE_REPO}:${TRAVIS_COMMIT::12} -t ${IMAGE_REPO}:${TRAVIS_BRANCH} .
-
+- docker build -t ${IMAGE_REPO}:${TRAVIS_COMMIT::12} -t ${IMAGE_REPO}:${TRAVIS_BRANCH}
+  .
 before_deploy:
-  - ./scripts/install_gcloud.sh
-  - ./scripts/install_kubectl.sh
-  - docker push ${IMAGE_REPO}:${TRAVIS_COMMIT::12}
-  - docker push ${IMAGE_REPO}:${TRAVIS_BRANCH}
-
+- "./scripts/install_gcloud.sh"
+- "./scripts/install_kubectl.sh"
+- docker push ${IMAGE_REPO}:${TRAVIS_COMMIT::12}
+- docker push ${IMAGE_REPO}:${TRAVIS_BRANCH}
 deploy:
   provider: script
-  script: ./scripts/deploy.sh
+  script: "./scripts/deploy.sh"
   on:
     branch: master
-
 notifications:
   email: false
   slack:
     rooms:
+      secure: Bbdu59XOHwGR+7o8euFPQUGFlB5ZTl+8C1ANn9BDf0RIpEPyz4eKZ+vhqBeWoCme20XBx7MhfMWrACmtANlLgztJamQOzAinqc8is9jdCQFHL/Aqe+7w3cBNChpVH/BLGCd+FH2aEi0PE33iIhnFoKxEPYb1ZsZVaOqwlv5OSRQxf5SuPVN5G7pg7F81EtYbSsYUImIhs5V0PTI7DOWMsrPx6jt9uSqG+NqRy/LO6CTWEYqW1CPo4U9OXyKJj/uQg8tGdU6ZTJOSj6l7dYb0GyfGks//o5k+bcytOYuOewjWdw+Dxz+6QNn+C+EPqDCp/iY5rUL/c38mwAlqBXwSDCEz511fxhbYp9XpgBMS3yiw02ATbSy/F8csdj4CeznVGs1dVT49Lv3cTJX2DI91qNVIRggPfm/JXCIcEHGOG5dXdxS1xsDHC5mEz5n70TkGGqCwkdI+IxYL7ELtlXQRqOp9GsfsKh48Y+9Wuy0lCGzq1oTq0eXB/0aUtlHB5JN4cB7Pt1A0c3PLkIDCkJ8SoHCAdX0Ka7JkvsrcK4vpynjqhR50F/zN9c452nDyCOC6grkLgWMNYBLZnX108oDVtyc+7pyNfO5gzBBB9bSGlS3hE+RdOQAcqRXaw+Dy1s6ybwmiHw1rewzkqZ2UIBHvYbbHIlsyPxn/dKotefSbOMU=
     on_success: change
     on_failure: change
     on_pull_requests: false
